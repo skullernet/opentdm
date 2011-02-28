@@ -2209,6 +2209,25 @@ void TDM_VoteMenuApply (edict_t *ent)
 		return;
 	}
 
+	//global 'disallow voting' check
+	if (!(int)g_vote_mask->value)
+	{
+		gi.cprintf (ent, PRINT_HIGH, "Proposing new settings is not allowed on this server.\n");
+		return;
+	}
+
+	if (!ent->client->pers.team && !ent->client->pers.admin)
+	{
+		gi.cprintf (ent, PRINT_HIGH, "Spectators cannot vote.\n");
+		return;
+	}
+
+	if (tdm_match_status != MM_PLAYING && tdm_match_status != MM_WARMUP)
+	{
+		gi.cprintf (ent, PRINT_HIGH, "You can propose new settings only during warmup.\n");
+		return;
+	}
+
 	if (ent->client->pers.votemenu_values.timelimit != ((unsigned)g_match_time->value / 60))
 	{
 		vote.newtimelimit = ent->client->pers.votemenu_values.timelimit;
