@@ -468,7 +468,6 @@ function.
 char *TDM_ScoreBoardString (edict_t *ent)
 {
 	char		entry[1024];
-	char		tmpstr[60];
 	static char	string[1024];
 	int			len;
 	int			i, j, k;
@@ -636,26 +635,26 @@ char *TDM_ScoreBoardString (edict_t *ent)
 		// ent is NULL only when we request the scoreboard for preserving
 		if (!ent)
 		{
-			sprintf (tmpstr, "oldscoreboard: %s", level.mapname);
+			sprintf (entry, "oldscoreboard: %s", level.mapname);
 			sprintf (string + strlen(string), "xv %d yv 24 string2 \"%s\" ",
-					(int)((36-strlen(tmpstr))/2)*8 + 8,
-					tmpstr
+					(int)((36-strlen(entry))/2)*8 + 8,
+					entry
 					);
 		}
 
 		// headers
-		sprintf (tmpstr, "%s:%.f(%s)", teaminfo[firstteam].name, averageping[firstteam-1], teaminfo[firstteam].skin);
+		sprintf (entry, "%s:%.f(%s)", teaminfo[firstteam].name, averageping[firstteam-1], teaminfo[firstteam].skin);
 		sprintf (string + strlen(string),
 			"xv %d yv 40 string \"%s\" ",
-			(int)((36-strlen(tmpstr))/2)*8 + 8,
-			tmpstr
+			(int)((36-strlen(entry))/2)*8 + 8,
+			entry
  			);
  
-		sprintf (tmpstr, "%s:%.f(%s)", teaminfo[secondteam].name, averageping[secondteam-1], teaminfo[secondteam].skin);
+		sprintf (entry, "%s:%.f(%s)", teaminfo[secondteam].name, averageping[secondteam-1], teaminfo[secondteam].skin);
  		sprintf (string + strlen(string),
 			"xv %d yv %d string \"%s\" ",
-			(int)((36-strlen(tmpstr))/2)*8 + 8,
-			offset + 40, tmpstr
+			(int)((36-strlen(entry))/2)*8 + 8,
+			offset + 40, entry
 			);
 
 		sprintf (string + strlen(string),
@@ -822,24 +821,24 @@ char *TDM_ScoreBoardString (edict_t *ent)
 		// headers
 		if (total[firstteam-1] > 0)
 		{
-			sprintf (tmpstr, "%s:%.f(%s)", teaminfo[firstteam].name, averageping[firstteam-1], teaminfo[firstteam].skin);
+			sprintf (entry, "%s:%.f(%s)", teaminfo[firstteam].name, averageping[firstteam-1], teaminfo[firstteam].skin);
 			sprintf (string + strlen(string),
 				"xv %d yv 40 string \"%s\" "
 				// draw name on X=0 later, so we don't have to set it for all the players below
 				"xv 264 yv 48 string2 \"Ping\" xv 8 string2 \" Name\" ",
-				(int)((36-strlen(tmpstr))/2)*8 + 8,
-				tmpstr
+				(int)((36-strlen(entry))/2)*8 + 8,
+				entry
 				);
 		}
 		if (total[secondteam-1] > 0)
 		{
-			sprintf (tmpstr, "%s:%.f(%s)", teaminfo[secondteam].name, averageping[secondteam-1], teaminfo[secondteam].skin);
+			sprintf (entry, "%s:%.f(%s)", teaminfo[secondteam].name, averageping[secondteam-1], teaminfo[secondteam].skin);
 			sprintf (string + strlen(string),
 				"xv %d yv %d string \"%s\" "
 				// draw name on X=0 later, so we don't have to set it for all the players below
 				"xv 264 yv %d string2 \"Ping\" xv 8 string2 \" Name\" ",
-				(int)((36-strlen(tmpstr))/2)*8 + 8, offset + 40,
-				tmpstr,	offset + 48
+				(int)((36-strlen(entry))/2)*8 + 8, offset + 40,
+				entry,	offset + 48
 				);
 		}
 
