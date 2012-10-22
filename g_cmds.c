@@ -957,7 +957,7 @@ void Cmd_Say_f (edict_t *ent, qboolean team, qboolean arg0)
 	
 
 	// disable mm1 and mm2 for spectators. for players in team disable only mm1
-	if (ent->client->pers.mute_frame > level.framenum && (!ent->client->pers.team || (!team && ent->client->pers.team)))
+	if (ent->client->pers.mute_frame > level.framenum && (!ent->client->pers.team || !team))
 	{
 		gi.cprintf(ent, PRINT_HIGH, "You are muted for %d more seconds\n", FRAMES_TO_SECS (ent->client->pers.mute_frame - level.framenum));
 		return;
@@ -1010,8 +1010,8 @@ void Cmd_Say_f (edict_t *ent, qboolean team, qboolean arg0)
 	strcat(text, "\n");
 
 	//wision: fixed.. but still dunno how it does work :x
-	//wision: we don't want to block say_team
-	if (flood_msgs->value && !team)
+	//wision: we don't want to block say_team for players in team
+	if (flood_msgs->value && (!ent->client->pers.team || !team))
 	{
 		cl = ent->client;
 
