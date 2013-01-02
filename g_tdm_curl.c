@@ -56,6 +56,10 @@ typedef struct dlhandle_s
 //to connect, we want to be able to download their configs
 #define MAX_DOWNLOADS	16
 
+//size limits for configs, must be power of two
+#define MAX_DLSIZE	0x100000	// 1 MiB
+#define MIN_DLSIZE	0x8000		// 32 KiB
+
 dlhandle_t	downloads[MAX_DOWNLOADS];
 
 static CURLM				*multi = NULL;
@@ -125,28 +129,37 @@ libcurl callback.
 */
 static size_t EXPORT HTTP_Recv (void *ptr, size_t size, size_t nmemb, void *stream)
 {
-	size_t		bytes;
 	dlhandle_t	*dl;
+	size_t		new_size, bytes;
 
 	dl = (dlhandle_t *)stream;
 
-	bytes = size * nmemb;
+	if (!nmemb)
+		return 0;
 
-	if (!dl->fileSize)
-	{
-		dl->fileSize = bytes > 131072 ? bytes : 131072;
-		dl->tempBuffer = gi.TagMalloc ((int)dl->fileSize, TAG_GAME);
-	}
-	else if (dl->position + bytes > dl->fileSize)
-	{
+	if (size > SIZE_MAX / nmemb)
+		goto oversize;
+
+	if (dl->position > MAX_DLSIZE)
+		goto oversize;
+
+	bytes = size * nmemb;
+	if (bytes >= MAX_DLSIZE - dl->position)
+		goto oversize;
+
+	//grow buffer in MIN_DLSIZE chunks. +1 for NUL.
+	new_size = (dl->position + bytes + MIN_DLSIZE) & ~(MIN_DLSIZE - 1);
+	if (new_size > dl->fileSize) {
 		char		*tmp;
 
 		tmp = dl->tempBuffer;
-
-		dl->tempBuffer = gi.TagMalloc ((int)(dl->fileSize*2), TAG_GAME);
-		memcpy (dl->tempBuffer, tmp, dl->fileSize);
-		gi.TagFree (tmp);
-		dl->fileSize *= 2;
+		dl->tempBuffer = gi.TagMalloc ((int)new_size, TAG_GAME);
+		if (tmp)
+		{
+			memcpy (dl->tempBuffer, tmp, dl->fileSize);
+			gi.TagFree (tmp);
+		}
+		dl->fileSize = new_size;
 	}
 
 	memcpy (dl->tempBuffer + dl->position, ptr, bytes);
@@ -154,51 +167,10 @@ static size_t EXPORT HTTP_Recv (void *ptr, size_t size, size_t nmemb, void *stre
 	dl->tempBuffer[dl->position] = 0;
 
 	return bytes;
-}
 
-/*
-===============
-HTTP_Header
-
-libcurl callback to update header info.
-===============
-*/
-static size_t EXPORT HTTP_Header (void *ptr, size_t size, size_t nmemb, void *stream)
-{
-	char	headerBuff[1024];
-	size_t	bytes;
-	size_t	len;
-
-	bytes = size * nmemb;
-
-	if (bytes <= 16)
-		return bytes;
-
-	if (bytes < sizeof(headerBuff)-1)
-		len = bytes;
-	else
-		len = sizeof(headerBuff)-1;
-
-	Q_strncpy (headerBuff, ptr, len);
-
-	if (!Q_strncasecmp (headerBuff, "Content-Length: ", 16))
-	{
-		dlhandle_t	*dl;
-
-		dl = (dlhandle_t *)stream;
-
-		//allocate buffer based on what the server claims content-length is. +1 for nul
-		dl->fileSize = strtoul (headerBuff + 16, NULL, 10);
-		if (!dl->tempBuffer)
-		{
-			if (dl->fileSize < 1048576)
-				dl->tempBuffer = gi.TagMalloc (dl->fileSize + 1, TAG_GAME);
-			else
-				gi.dprintf ("Suspiciously large file while trying to download %s!\n", dl->URL);
-		}
-	}
-
-	return bytes;
+oversize:
+	gi.dprintf ("Suspiciously large file while trying to download %s!\n", dl->URL);
+	return 0;
 }
 
 int EXPORT CURL_Debug (CURL *c, curl_infotype type, char *data, size_t size, void * ptr)
@@ -307,8 +279,6 @@ void HTTP_StartDownload (dlhandle_t *dl)
 		curl_easy_setopt (dl->curl, CURLOPT_PROXY, NULL);
 	curl_easy_setopt (dl->curl, CURLOPT_FOLLOWLOCATION, 1);
 	curl_easy_setopt (dl->curl, CURLOPT_MAXREDIRS, 5);
-	curl_easy_setopt (dl->curl, CURLOPT_WRITEHEADER, dl);
-	curl_easy_setopt (dl->curl, CURLOPT_HEADERFUNCTION, HTTP_Header);
 	curl_easy_setopt (dl->curl, CURLOPT_USERAGENT, "OpenTDM (" OPENTDM_VERSION ")");
 	curl_easy_setopt (dl->curl, CURLOPT_REFERER, hostname->string);
 	curl_easy_setopt (dl->curl, CURLOPT_URL, dl->URL);
