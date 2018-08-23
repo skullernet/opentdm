@@ -1533,7 +1533,7 @@ Returns true for items we want to keep track of for stats.
 qboolean TDM_IsTrackableItem (edict_t *ent)
 {
 	if (!ent->item)
-		TDM_Error ("TDM_IsTrackableItem: Got entity %d with no item", ent - g_edicts);
+		TDM_Error ("TDM_IsTrackableItem: Got entity %d with no item", (int)(ent - g_edicts));
 
 	//we don't track stuff during warmup
 	if (tdm_match_status < MM_PLAYING || tdm_match_status == MM_SCOREBOARD)
@@ -1598,7 +1598,7 @@ void TDM_ItemGrabbed (edict_t *ent, edict_t *player)
 
 	//something bad happened if this is hit!
 	if (!player->client->resp.teamplayerinfo)
-		TDM_Error ("TDM_ItemGrabbed: No teamplayerinfo for client %d", player - g_edicts - 1);
+		TDM_Error ("TDM_ItemGrabbed: No teamplayerinfo for client %d", (int)(player - g_edicts - 1));
 
 	//add it
 	player->client->resp.teamplayerinfo->items_collected[ITEM_INDEX(ent->item)]++;

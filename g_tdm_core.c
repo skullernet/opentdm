@@ -1239,7 +1239,7 @@ void TDM_EndMatch (void)
 		if (ent->inuse && ent->client->pers.team)
 		{
 			if (!ent->client->resp.teamplayerinfo)
-				TDM_Error ("TDM_EndMatch: Missing teamplayerinfo for client %d", ent - g_edicts - 1);
+				TDM_Error ("TDM_EndMatch: Missing teamplayerinfo for client %d", (int)(ent - g_edicts - 1));
 
 			TDM_Stats_f (ent, ent->client->resp.teamplayerinfo->matchinfo);
 		}

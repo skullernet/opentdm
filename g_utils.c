@@ -412,7 +412,7 @@ void G_StuffCmd (edict_t *e, const char *fmt, ...)
 	char		text[512];
 
 	if (e && !e->client->pers.connected)
-		TDM_Error ("G_StuffCmd: Bad client %d for '%s'", e - g_edicts, fmt);
+		TDM_Error ("G_StuffCmd: Bad client %d for '%s'", (int)(e - g_edicts - 1), fmt);
 
 	va_start (argptr,fmt);
 	Q_vsnprintf (text, sizeof(text), fmt, argptr);

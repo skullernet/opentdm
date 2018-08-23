@@ -926,7 +926,7 @@ void	G_InitEdict (edict_t *e);
 edict_t	*G_Spawn (void);
 void	G_FreeEdict (edict_t *e);
 
-void	G_StuffCmd (edict_t *e, const char *fmt, ...);
+void	G_StuffCmd (edict_t *e, const char *fmt, ...) __attribute__ ((format (printf, 2, 3)));
 void	G_UnicastSound (edict_t *ent, int index, qboolean reliable);
 void	G_TouchTriggers (edict_t *ent);
 void	G_TouchSolids (edict_t *ent);
@@ -1101,7 +1101,7 @@ void TDM_SetupSounds (void);
 char *TDM_SetColorText (char *buffer);
 void TDM_PlayerNameChanged (edict_t *ent);
 void TDM_WeaponFired (edict_t *ent);
-void TDM_Error (const char *fmt, ...);
+void TDM_Error (const char *fmt, ...) __attribute__ ((format (printf, 1, 2)));
 
 void TDM_BeginDamage (void);
 void TDM_Damage (edict_t *ent, edict_t *victim, edict_t *inflictor, int damage);
