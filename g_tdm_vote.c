@@ -1651,7 +1651,7 @@ qboolean TDM_VoteWebConfig (edict_t *ent)
 	Com_sprintf (tdm_vote_download.path , sizeof(tdm_vote_download.path ), "configs/%s.cfg", value);
 	tdm_vote_download.initiator = ent;
 	tdm_vote_download.type = DL_CONFIG;
-	strncpy (tdm_vote_download.name, value, sizeof(tdm_vote_download.name)-1);
+	Q_strncpy (tdm_vote_download.name, value, sizeof(tdm_vote_download.name)-1);
 	tdm_vote_download.onFinish = TDM_ConfigDownloaded;
 	tdm_vote_download.inuse = true;
 	tdm_vote_download.unique_id = ent->client->pers.uniqueid;

@@ -15,7 +15,7 @@ const char *Sys_FindFirst (const char *path)
 	if (findhandle != INVALID_HANDLE_VALUE)
 		TDM_Error ("Sys_FindFirst without close");
 
-	strncpy (findbase, path, sizeof(findbase)-1);
+	Q_strncpy (findbase, path, sizeof(findbase)-1);
 
 	p = strrchr (findbase, '/');
 	if (p)

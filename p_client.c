@@ -1460,8 +1460,8 @@ void ClientUserinfoChanged (edict_t *ent, char *userinfo)
 	//new connection, server is calling us. just save userinfo for later.
 	if (!ent->inuse)
 	{
-		strncpy (ent->client->pers.ip, Info_ValueForKey(userinfo, "ip"), sizeof(ent->client->pers.ip)-1);
-		strncpy (ent->client->pers.userinfo, userinfo, sizeof(ent->client->pers.userinfo)-1);
+		Q_strncpy (ent->client->pers.ip, Info_ValueForKey(userinfo, "ip"), sizeof(ent->client->pers.ip)-1);
+		Q_strncpy (ent->client->pers.userinfo, userinfo, sizeof(ent->client->pers.userinfo)-1);
 
 		if (game.server_features & GMF_MVDSPEC)
 		{
@@ -1511,7 +1511,7 @@ void ClientUserinfoChanged (edict_t *ent, char *userinfo)
 		{
 			edict_t	*e;
 
-			strncpy (ent->client->pers.netname, s, sizeof(ent->client->pers.netname)-1);
+			Q_strncpy (ent->client->pers.netname, s, sizeof(ent->client->pers.netname)-1);
 
 			// wision: update current_matchinfo structure during the match, so the scoreboard is correct
 			if (current_matchinfo.teamplayers)
@@ -1524,7 +1524,7 @@ void ClientUserinfoChanged (edict_t *ent, char *userinfo)
 					tmpl = &current_matchinfo.teamplayers[i];
 
 					if (tmpl->client == ent)
-						strncpy (tmpl->name, s, sizeof(tmpl->name)-1);
+						Q_strncpy (tmpl->name, s, sizeof(tmpl->name)-1);
 				}
 			}
 
@@ -1562,7 +1562,7 @@ void ClientUserinfoChanged (edict_t *ent, char *userinfo)
 		ent->client->pers.hand = atoi(s);
 
 	// save off the userinfo in case we want to check something later
-	strncpy (ent->client->pers.userinfo, userinfo, sizeof(ent->client->pers.userinfo)-1);
+	Q_strncpy (ent->client->pers.userinfo, userinfo, sizeof(ent->client->pers.userinfo)-1);
 
 	if (do_config_download)
 		TDM_DownloadPlayerConfig (ent);

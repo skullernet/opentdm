@@ -853,7 +853,7 @@ void TDM_DownloadPlayerConfig (edict_t *ent)
 	Com_sprintf (ent->client->pers.download.path , sizeof(ent->client->pers.download.path ), "playerconfigs/%s", stats_id);
 	ent->client->pers.download.initiator = ent;
 	ent->client->pers.download.type = DL_PLAYER_CONFIG;
-	strncpy (ent->client->pers.download.name, stats_id, sizeof(ent->client->pers.download.name)-1);
+	Q_strncpy (ent->client->pers.download.name, stats_id, sizeof(ent->client->pers.download.name)-1);
 	ent->client->pers.download.onFinish = TDM_PlayerConfigDownloaded;
 	ent->client->pers.download.inuse = true;
 	ent->client->pers.download.unique_id = ent->client->pers.uniqueid;

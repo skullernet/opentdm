@@ -2406,9 +2406,9 @@ void TDM_TeamEnemySkin_f (edict_t *ent, qboolean team)
 	}
 
 	if (team)
-		strncpy (ent->client->pers.config.teamskin, gi.argv(1), sizeof(ent->client->pers.config.teamskin)-1);
+		Q_strncpy (ent->client->pers.config.teamskin, gi.argv(1), sizeof(ent->client->pers.config.teamskin)-1);
 	else
-		strncpy (ent->client->pers.config.enemyskin, gi.argv(1), sizeof(ent->client->pers.config.enemyskin)-1);
+		Q_strncpy (ent->client->pers.config.enemyskin, gi.argv(1), sizeof(ent->client->pers.config.enemyskin)-1);
 
 	TDM_SetTeamSkins (ent, NULL);
 }
