@@ -671,7 +671,7 @@ void P_WorldEffects (void)
 		{
 			current_player->air_finished_framenum = level.framenum + SECS_TO_FRAMES(10);
 
-			if (((current_client->breather_framenum - level.framenum) % (25*SECS_TO_FRAMES(0.1f))) == 0)
+			if (((current_client->breather_framenum - level.framenum) % SECS_TO_FRAMES(2.5f)) == 0)
 			{
 				if (!current_client->breather_sound)
 					gi.sound (current_player, CHAN_AUTO, gi.soundindex("player/u_breath1.wav"), 1, ATTN_NORM, 0);
